@@ -1,0 +1,64 @@
+/* Reset */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to bottom right, #a1c4fd, #c2e9fb); /* oceanic dreamy gradient */
+  color: #1f3b4d; /* Deep ocean blue for primary text */
+}
+
+/* For all headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #0e3d59; /* Dreamy deep blue */
+}
+
+/* For paragraphs and span */
+p, span {
+  color: #2a4d69; /* Muted ocean tone */
+}
+
+/* Buttons */
+button {
+  background: linear-gradient(to right, #56ccf2, #2f80ed); /* smooth ocean wave */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(to right, #2f80ed, #56ccf2);
+}
+
+/* Inputs */
+input[type="file"],
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 0.5rem;
+  border: 1px solid #a0c4ff;
+  border-radius: 5px;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+input:focus {
+  border-color: #5eaaa8;
+  box-shadow: 0 0 4px #5eaaa8;
+}
+
+/* Card-style elements */
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.2s ease-in-out;
+}
