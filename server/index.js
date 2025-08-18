@@ -53,32 +53,45 @@ app.post('/api/upload', upload.single('resume'), async (req, res) => {
     });
     const atsScore = Math.round((matched / keywords.length) * 100);
 
-    // === AI Suggestions using Gemini ===
-   // === AI Suggestions using Gemini ===
-let suggestions = "No suggestions generated.";
+// === AI Suggestions using Gemini (Structured JSON) ===
+let suggestions = [];
 try {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const prompt = `
-You are an ATS optimization expert.
-Analyze the following resume text and output exactly 5 short improvement tips.
 
-RULES:
-- Each tip must be 12 words or less.
-- Do NOT add any explanation, numbering, or extra text.
-- Output ONLY a JSON array of strings. Example:
-["Tip 1", "Tip 2", "Tip 3", "Tip 4", "Tip 5"]
+  const prompt = `
+You are an ATS optimization assistant.
+Return exactly 5 short, actionable suggestions to improve this resume's ATS score.
+Each suggestion must be <= 12 words, no proper nouns.
 
 Resume:
 ${text}
-  `;
-  const result = await model.generateContent(prompt);
-  suggestions = result.response.text().trim();
+`;
 
-  // Safety: Keep only first 5 lines if Gemini adds more
-  const lines = suggestions.split("\n").filter(line => line.trim() !== "");
-  suggestions = lines.slice(0, 5).join("\n");
+  const result = await model.generateContent({
+    contents: [{ role: "user", parts: [{ text: prompt }]}],
+    generationConfig: {
+      // Force strict JSON so the model can't wrap in code fences or prose
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "object",
+        properties: {
+          suggestions: {
+            type: "array",
+            minItems: 5,
+            maxItems: 5,
+            items: { type: "string", maxLength: 80 }
+          }
+        },
+        required: ["suggestions"]
+      }
+    }
+  });
+
+  const json = JSON.parse(result.response.text());
+  suggestions = Array.isArray(json.suggestions) ? json.suggestions.slice(0, 5) : [];
 } catch (aiError) {
   console.error("Gemini AI Error:", aiError);
+  suggestions = [];
 }
 
 
@@ -97,5 +110,5 @@ ${text}
 
 // Start server
 app.listen(5000, () => {
-  console.log('Server running on http://localhost:5000');
+  console.log(' Jai bhai Server running on http://localhost:5000');
 });
