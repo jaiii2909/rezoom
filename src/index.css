@@ -128,7 +128,7 @@ input:focus {
   transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* Add to your index.css or App.css */
+
 .ai-suggestions,
 .parsed-preview {
   background: linear-gradient(120deg, #181a2a 0%, #23244a 100%);
@@ -144,4 +144,76 @@ input:focus {
 .ai-suggestions p,
 .parsed-preview p {
   color: #e3e8ff !important;
+}
+
+/* Upload fullpage covers entire viewport and centers content */
+.upload-fullpage {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Center and enlarge the upload form */
+.upload-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 3rem auto 2rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+}
+
+/* Make input box larger and centered */
+.upload-input {
+  font-size: 1.35rem;
+  padding: 2rem 1.5rem;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #181a2a 0%, #23244a 100%);
+  color: #e3e8ff;
+  border: 2px solid #2d2e6e;
+  box-shadow: 0 2px 12px #0a0033;
+  width: 100%;
+  min-height: 90px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Style file selector button */
+.upload-input::file-selector-button {
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #2d2e6e 0%, #1a1747 100%);
+  color: #f8faff;
+  border: none;
+  box-shadow: 0 2px 8px #0a0033;
+  font-weight: 500;
+  margin-right: 1rem;
+}
+
+/* Upload button larger and centered */
+.upload-btn {
+  font-size: 1.25rem;
+  padding: 1rem 3rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  background: linear-gradient(90deg, #2d2e6e 0%, #1a1747 100%);
+  color: #f8faff;
+  border: none;
+  box-shadow: 0 2px 12px #0a0033;
+  font-weight: 600;
+  letter-spacing: 1px;
+  align-self: center;
+}
+
+.upload-btn:hover {
+  background: linear-gradient(90deg, #1a1747 0%, #2d2e6e 100%);
+  color: #e3e8ff;
 }
