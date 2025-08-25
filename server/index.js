@@ -8,9 +8,6 @@ const fs = require('fs');
 const pdfParse = require('pdf-parse');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// === Keywords for ATS scoring ===
-const keywords = ["React", "JavaScript", "Node.js", "MongoDB", "HTML", "CSS", "Express", "PHP"];
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -32,7 +29,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// === Route: Upload, parse resume, ATS score, AI suggestions ===
+// === Route: Upload, parse resume, give suggestions ===
 app.post('/api/upload', upload.single('resume'), async (req, res) => {
   try {
     const filePath = path.join(uploadDir, req.file.filename);
@@ -44,61 +41,49 @@ app.post('/api/upload', upload.single('resume'), async (req, res) => {
 
     const text = pdfData.text;
 
-    // === ATS Scoring ===
-    let matched = 0;
-    keywords.forEach((kw) => {
-      if (text.toLowerCase().includes(kw.toLowerCase())) {
-        matched++;
-      }
-    });
-    const atsScore = Math.round((matched / keywords.length) * 100);
+    // === AI Suggestions (Structure, Spacing, Content) ===
+    let suggestions = [];
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-// === AI Suggestions using Gemini (Structured JSON) ===
-let suggestions = [];
-try {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-  const prompt = `
-You are an ATS optimization assistant.
-Return exactly 5 short, actionable suggestions to improve this resume's ATS score.
+      const prompt = `
+You are a professional resume reviewer.
+Return exactly 5 short, actionable suggestions to improve resume readability, structure, spacing, and content clarity.
 Each suggestion must be <= 12 words, no proper nouns.
 
 Resume:
 ${text}
 `;
 
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: prompt }]}],
-    generationConfig: {
-      // Force strict JSON so the model can't wrap in code fences or prose
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: "object",
-        properties: {
-          suggestions: {
-            type: "array",
-            minItems: 5,
-            maxItems: 5,
-            items: { type: "string", maxLength: 80 }
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: prompt }]}],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "object",
+            properties: {
+              suggestions: {
+                type: "array",
+                minItems: 5,
+                maxItems: 5,
+                items: { type: "string", maxLength: 80 }
+              }
+            },
+            required: ["suggestions"]
           }
-        },
-        required: ["suggestions"]
-      }
+        }
+      });
+
+      const json = JSON.parse(result.response.text());
+      suggestions = Array.isArray(json.suggestions) ? json.suggestions.slice(0, 5) : [];
+    } catch (aiError) {
+      console.error("Gemini AI Error:", aiError);
+      suggestions = [];
     }
-  });
-
-  const json = JSON.parse(result.response.text());
-  suggestions = Array.isArray(json.suggestions) ? json.suggestions.slice(0, 5) : [];
-} catch (aiError) {
-  console.error("Gemini AI Error:", aiError);
-  suggestions = [];
-}
-
 
     res.json({
       message: 'File uploaded successfully',
       text: text.substring(0, 500) + "...", // Short preview
-      atsScore,
       suggestions
     });
 

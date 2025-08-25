@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Modal from './Modal';
 import Card from './Card';
 import Upload from './Upload';
-import JobDescription from './JobDescription'; // you’ll create this new file
+import JobDescription from './JobDescription';
 
 function App() {
   const [isModalOpen, setModalOpen] = useState(false);
