@@ -1,73 +1,136 @@
+Rezoom - AI Resume Builder and Job Description Matcher
 
-Live at - https://rezoom-jai-agrawals-projects.vercel.app/
+Rezoom is a full-stack web application that helps users optimize their resumes for Applicant Tracking Systems (ATS). It allows users to upload resumes, extract text, get improvement suggestions, and compare resumes against job descriptions to calculate match scores and identify missing keywords.
 
-# Getting Started with Create React App
+Features
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Resume Upload and Parsing
+Upload resumes in PDF, DOC, DOCX, or TXT format and extract text automatically.
 
-## Available Scripts
+ATS Suggestions
+Get AI-powered suggestions to improve your resume for better ATS compatibility.
 
-In the project directory, you can run:
+Job Description Comparison
+Compare your resume with a given job description to:
 
-### `npm start`
+Calculate a match score (0–100).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Identify missing skills or keywords.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Match Visualization
+Visual representation of the match score using a progress bar.
 
-### `npm test`
+Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Frontend
 
-### `npm run build`
+React (Create React App)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Bootstrap
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+react-circular-progressbar
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Axios
 
-### `npm run eject`
+Backend
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Node.js
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Express
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Multer (file uploads)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+pdf-parse (resume parsing)
 
-## Learn More
+Google Generative AI (Gemini API)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Database
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+MongoDB (can be extended if storing resumes or user data is required)
 
-### Code Splitting
+Installation and Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Clone the repository
 
-### Analyzing the Bundle Size
+git clone https://github.com/your-username/rezoom.git
+cd rezoom
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+Install dependencies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Backend:
 
-### Advanced Configuration
+cd backend
+npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+Frontend:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+cd frontend
+npm install
 
-### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Run the application
+
+Start backend server:
+
+cd backend
+node index.js
+
+
+Start frontend development server:
+
+cd frontend
+npm start
+
+
+By default:
+
+Backend runs on http://localhost:5000
+
+Frontend runs on http://localhost:3000
+
+Environment Variables
+
+For production, create a .env file in the backend to store:
+
+GEMINI_API_KEY=your_api_key_here
+
+Usage
+
+Navigate to the app in your browser at http://localhost:3000.
+
+Upload your resume and extract text.
+
+View AI-powered suggestions to improve it.
+
+Paste a job description and upload your resume to calculate match score and missing keywords.
+
+Project Structure
+rezoom/
+│
+├── backend/               # Express server
+│   ├── index.js           # Main server file with APIs
+│   ├── uploads/           # Temporary storage for resumes
+│   └── package.json
+│
+├── frontend/              # React client
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Upload.js          # Resume upload & suggestions
+│   │   │   ├── JobDescription.js  # Resume vs JD comparison
+│   │   │   └── App.js
+│   │   └── index.js
+│   └── package.json
+│
+└── README.md
+
+Future Enhancements
+
+Support for multiple file formats beyond PDF/DOC/DOCX.
+
+User authentication and profile storage.
+
+Resume builder with customizable templates.
+
+Exporting ATS-optimized resumes in different formats.
