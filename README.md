@@ -133,4 +133,8 @@ User authentication and profile storage.
 
 Resume builder with customizable templates.
 
+<<<<<<< HEAD
 Exporting ATS-optimized resumes in different formats.
+=======
+Exporting ATS-optimized resumes in different formats.
+>>>>>>> 1526253384c318d3ec24d8673ae658c0c6d5db25
