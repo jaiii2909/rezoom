@@ -8,6 +8,7 @@ const fs = require('fs');
 const pdfParse = require('pdf-parse');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
+const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -94,6 +95,6 @@ ${text}
 });
 
 // Start server
-app.listen(5000, () => {
+app.listen(PORT, () => {
   console.log(' Jai bhai Server running on http://localhost:5000');
 });

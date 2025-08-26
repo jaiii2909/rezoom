@@ -19,20 +19,28 @@ function Upload() {
 
     const formData = new FormData();
     formData.append('resume', file);
+   
+   
+   try {
+  const API_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000"
+    : "https://rezoom-backend.onrender.com";
 
-    try {
-      const res = await axios.post('http://localhost:5000/api/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+  const res = await axios.post(`${API_URL}/api/upload`, formData, {
+  headers: { 'Content-Type': 'multipart/form-data' },
+ });
 
-      setMessage(res.data.message || "Resume processed successfully!");
-      setParsedText(res.data.text || 'No text extracted.');
-      setSuggestions(Array.isArray(res.data.suggestions) ? res.data.suggestions : []);
+  setMessage(res.data.message || "Resume processed successfully!");
+  setParsedText(res.data.text || "No text extracted.");
+  setSuggestions(
+    Array.isArray(res.data.suggestions) ? res.data.suggestions : []
+  );
+} catch (err) {
+  console.error(err);
+  setMessage("Upload failed. Try again.");
+}
 
-    } catch (err) {
-      console.error(err);
-      setMessage("Upload failed. Try again.");
-    }
 
     setLoading(false);
   };
