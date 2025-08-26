@@ -25,7 +25,7 @@ function Upload() {
   const API_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5000"
-    : "https://rezoom-backend.onrender.com";
+    : "https://rezoom-1.onrender.com";
 
   const res = await axios.post(`${API_URL}/api/upload`, formData, {
   headers: { 'Content-Type': 'multipart/form-data' },
