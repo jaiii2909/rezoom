@@ -12,18 +12,36 @@ function JobDescription() {
     setResume(e.target.files[0]);
   };
 
-  const handleCompare = () => {
+   const handleCompare = async () => {
     if (!jobDescription || !resume) {
       alert("Please upload resume and enter job description!");
       return;
     }
 
-    // Temporary dummy logic → backend will do actual keyword comparison
-    const dummyScore = Math.floor(Math.random() * 41) + 60; // 60–100%
-    setScore(dummyScore);
+    const formData = new FormData();
+    formData.append("resume", resume);
+    formData.append("jobDescription", jobDescription);
 
-    setMissingKeywords(["Teamwork", "Leadership", "React.js"]); // example
+    try {
+      const res = await fetch("http://localhost:5000/api/compare", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setScore(data.score);
+        setMissingKeywords(data.missingKeywords || []);
+      } else {
+        alert(data.message || "Error comparing resume and job description");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong while comparing!");
+    }
   };
+
 
   return (
     <div className="container py-5">
