@@ -17,31 +17,34 @@ function JobDescription() {
       alert("Please upload resume and enter job description!");
       return;
     }
+const formData = new FormData();
+formData.append("resume", resume);
+formData.append("jobDescription", jobDescription);
 
-    const formData = new FormData();
-    formData.append("resume", resume);
-    formData.append("jobDescription", jobDescription);
+try {
+  const API_URL =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:5000"
+      : "https://rezoom-1.onrender.com";
 
-    try {
-      const res = await fetch("http://localhost:5000/api/compare", {
-        method: "POST",
-        body: formData,
-      });
+  const res = await fetch(`${API_URL}/api/compare`, {
+    method: "POST",
+    body: formData,
+  });
 
-      const data = await res.json();
+  const data = await res.json();
 
-      if (res.ok) {
-        setScore(data.score);
-        setMissingKeywords(data.missingKeywords || []);
-      } else {
-        alert(data.message || "Error comparing resume and job description");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Something went wrong while comparing!");
-    }
-  };
-
+  if (res.ok) {
+    setScore(data.score);
+    setMissingKeywords(data.missingKeywords || []);
+  } else {
+    alert(data.message || "Error comparing resume and job description");
+  }
+} catch (error) {
+  console.error("Error:", error);
+  alert("Something went wrong while comparing!");
+}
+   }
 
   return (
     <div className="container py-5">
