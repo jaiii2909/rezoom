@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { API_URL } from './api';
 
 function Upload() {
   const [file, setFile] = useState(null);
@@ -10,7 +10,7 @@ function Upload() {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!file) return alert("Please select a file!");
+    if (!file) return setMessage("Please select a file!");
 
     setLoading(true);
     setMessage('');
@@ -19,79 +19,45 @@ function Upload() {
 
     const formData = new FormData();
     formData.append('resume', file);
-   
-   
-   try {
-  const API_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5000"
-    : "https://rezoom-1.onrender.com";
 
-  const res = await axios.post(`${API_URL}/api/upload`, formData, {
-  headers: { 'Content-Type': 'multipart/form-data' },
- });
+    try {
+      const res = await fetch(`${API_URL}/api/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
 
-  setMessage(res.data.message || "Resume processed successfully!");
-  setParsedText(res.data.text || "No text extracted.");
-  setSuggestions(
-    Array.isArray(res.data.suggestions) ? res.data.suggestions : []
-  );
-} catch (err) {
-  console.error(err);
-  setMessage("Upload failed. Try again.");
-}
+      if (!res.ok) {
+        setMessage(data.message || "Upload failed. Try again.");
+        return;
+      }
 
-
-    setLoading(false);
+      setMessage(data.message || "Resume processed successfully!");
+      setParsedText(data.text || "No text extracted.");
+      setSuggestions(Array.isArray(data.suggestions) ? data.suggestions : []);
+    } catch (err) {
+      console.error(err);
+      setMessage("Upload failed. Try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div 
-      className="upload-page d-flex flex-column justify-content-center align-items-center min-vh-100"
-      style={{ padding: "20px" }}
-    >
-      <div 
-        className="upload-container"
-        style={{
-          maxWidth: "700px",
-          width: "100%",
-          textAlign: "left"   // 🔑 Align all child content left
-        }}
-      >
+    <div className="upload-page d-flex flex-column justify-content-center align-items-center min-vh-100">
+      <div className="upload-container">
         {/* Upload Form */}
         <form onSubmit={handleUpload} className="d-flex flex-column">
           <input
             type="file"
-            accept=".pdf"
+            accept=".pdf,.docx,.txt"
             className="upload-input"
-            style={{
-              fontSize: "1.1rem",
-              padding: "1rem",
-              borderRadius: "12px",
-              background: "linear-gradient(120deg, #181a2a 0%, #23244a 100%)",
-              color: "#e3e8ff",
-              border: "2px solid #2d2e6e",
-              boxShadow: "0 2px 8px #0a0033",
-              width: "100%",
-              marginBottom: "1rem"
-            }}
             onChange={(e) => setFile(e.target.files[0])}
           />
           <button
             className="upload-btn align-self-start"
             type="submit"
             disabled={loading}
-            style={{
-              fontSize: "1.1rem",
-              padding: "0.75rem 2rem",
-              borderRadius: "10px",
-              background: "linear-gradient(90deg, #2d2e6e 0%, #1a1747 100%)",
-              color: "#f8faff",
-              border: "none",
-              boxShadow: "0 2px 8px #0a0033",
-              fontWeight: "600",
-              letterSpacing: "1px"
-            }}
           >
             {loading ? 'Processing...' : 'Upload Resume'}
           </button>

@@ -1,50 +1,55 @@
 import React, { useState } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { API_URL } from "./api";
 
 function JobDescription() {
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState(null);
   const [score, setScore] = useState(null);
   const [missingKeywords, setMissingKeywords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleFileUpload = (e) => {
     setResume(e.target.files[0]);
   };
 
-   const handleCompare = async () => {
+  const handleCompare = async () => {
     if (!jobDescription || !resume) {
-      alert("Please upload resume and enter job description!");
+      setError("Please upload resume and enter job description!");
       return;
     }
-const formData = new FormData();
-formData.append("resume", resume);
-formData.append("jobDescription", jobDescription);
 
-try {
-  const API_URL =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:5000"
-      : "https://rezoom-1.onrender.com";
+    setLoading(true);
+    setError("");
+    setScore(null);
+    setMissingKeywords([]);
 
-  const res = await fetch(`${API_URL}/api/compare`, {
-    method: "POST",
-    body: formData,
-  });
+    const formData = new FormData();
+    formData.append("resume", resume);
+    formData.append("jobDescription", jobDescription);
 
-  const data = await res.json();
+    try {
+      const res = await fetch(`${API_URL}/api/compare`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
 
-  if (res.ok) {
-    setScore(data.score);
-    setMissingKeywords(data.missingKeywords || []);
-  } else {
-    alert(data.message || "Error comparing resume and job description");
-  }
-} catch (error) {
-  console.error("Error:", error);
-  alert("Something went wrong while comparing!");
-}
-   }
+      if (res.ok) {
+        setScore(data.score);
+        setMissingKeywords(data.missingKeywords || []);
+      } else {
+        setError(data.message || "Error comparing resume and job description");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError("Something went wrong while comparing!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container py-5">
@@ -66,15 +71,20 @@ try {
         <input
           type="file"
           className="form-control"
-          accept=".pdf,.doc,.docx,.txt"
+          accept=".pdf,.docx,.txt"
           onChange={handleFileUpload}
         />
       </div>
 
       <div className="text-center">
-        <button className="btn btn-primary btn-lg" onClick={handleCompare}>
-          Compare Now
+        <button
+          className="btn btn-primary btn-lg"
+          onClick={handleCompare}
+          disabled={loading}
+        >
+          {loading ? "Comparing..." : "Compare Now"}
         </button>
+        {error && <p className="mt-3">{error}</p>}
       </div>
 
       {score !== null && (
@@ -85,7 +95,7 @@ try {
               value={score}
               text={`${score}%`}
               styles={buildStyles({
-                textColor: "#333",
+                textColor: "#e3e8ff",
                 pathColor:
                   score < 50 ? "red" : score < 75 ? "orange" : "green",
                 trailColor: "#ddd",
